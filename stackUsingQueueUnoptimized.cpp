@@ -1,39 +1,58 @@
-#include <stack>
- 
-class MinStack {
+#include <queue>         
+class MyStack {
+private:
+    queue<int> queueOriginal;
+    queue<int> queueTemp;
 public:
-    /** initialize your data structure here. */
-    std::stack<int> originalStack; 
-    std::stack<int> minStack;
+    /** Initialize your data structure here. */
+    MyStack() {
+        
+    }
     
+    /** Push element x onto stack. */
     void push(int x) {
-        originalStack.push(x);
-        if(minStack.empty() || minStack.top() >= x) {
-            minStack.push(x);
-        }
+        queueOriginal.push(x);
     }
     
-    void pop() {
-        if(originalStack.top() == minStack.top()) {
-            minStack.pop();
+    /** Removes the element on top of the stack and returns that element. */
+    int pop() {
+        int element;
+        do {
+            element = queueOriginal.front();
+            queueOriginal.pop();
+            if(!queueOriginal.empty()) {
+                queueTemp.push(element);                 
+            }
         }
-        originalStack.pop();
+        while(!queueOriginal.empty());
+        swap(queueOriginal, queueTemp);
+        return element;
     }
     
+    /** Get the top element. */
     int top() {
-        return originalStack.top();
+        int element;
+        while(!queueOriginal.empty()) {
+            element = queueOriginal.front();
+            queueOriginal.pop();            
+            queueTemp.push(element); 
+        }
+        swap(queueOriginal, queueTemp);
+        return element;
+        
     }
     
-    int getMin() {
-        return minStack.top();
+    /** Returns whether the stack is empty. */
+    bool empty() {
+        return queueOriginal.empty();
     }
 };
 
 /**
- * Your MinStack object will be instantiated and called as such:
- * MinStack obj = new MinStack();
+ * Your MyStack object will be instantiated and called as such:
+ * MyStack obj = new MyStack();
  * obj.push(x);
- * obj.pop();
+ * int param_2 = obj.pop();
  * int param_3 = obj.top();
- * int param_4 = obj.getMin();
+ * bool param_4 = obj.empty();
  */
